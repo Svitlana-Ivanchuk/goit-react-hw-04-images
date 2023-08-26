@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { useState } from 'react';
 import { GalleryItemStyled, ImageStyled } from './ImageGalleryItem.styled';
 import Modal from 'react-modal';
 import { ImageModal } from 'components/Modal/Modal';
@@ -20,29 +20,31 @@ const customStyles = {
 
 Modal.setAppElement('#root');
 
-export class ImageGalleryItem extends Component {
-  state = {
-    isModalOpen: false,
-    isLoading: false,
+export const ImageGalleryItem = ({ srcWeb, srcLarge, alt }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    setIsLoading(true);
   };
 
-  openModal = () => this.setState({ isModalOpen: true, isLoading: true });
-  closeModal = () => this.setState({ isModalOpen: false, isLoading: false });
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setIsLoading(false);
+  };
 
-  render() {
-    const { srcWeb, srcLarge, alt } = this.props;
-    return (
-      <GalleryItemStyled>
-        {this.state.isLoading && <Loader />}
-        <ImageStyled src={srcWeb} alt={alt} onClick={this.openModal} />
-        <ImageModal
-          isModalOpen={this.state.isModalOpen}
-          onClose={this.closeModal}
-          customStyles={customStyles}
-          src={srcLarge}
-          alt={alt}
-        />
-      </GalleryItemStyled>
-    );
-  }
-}
+  return (
+    <GalleryItemStyled>
+      {isLoading && <Loader />}
+      <ImageStyled src={srcWeb} alt={alt} onClick={openModal} />
+      <ImageModal
+        isModalOpen={isModalOpen}
+        onClose={closeModal}
+        customStyles={customStyles}
+        src={srcLarge}
+        alt={alt}
+      />
+    </GalleryItemStyled>
+  );
+};
